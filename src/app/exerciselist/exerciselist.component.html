@@ -1,0 +1,85 @@
+<div class="flex-container">
+
+  <div class="input-div">
+    <div>
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let option of filteredExercises$ | async" [value]="option.name" (click)="addToWorkout(option.id)">
+          {{option.name}}
+        </mat-option>
+      </mat-autocomplete>
+      <mat-label style="margin-right: 10px;"><mat-icon>add_circle_outline</mat-icon></mat-label>
+        <input class="exercise-select" type="text"
+          placeholder="Add exercise to workout"
+          matInput
+          #input
+          [matAutocomplete]="auto"
+          (keyup)="filter(input.value)"
+          (focus)="filter(''); input.value=''; ">
+    </div>
+    <div class="slider-with-icon">
+      <mat-slider 
+      thumbLabel
+      color="primary" 
+      min="5" 
+      max="120" 
+      step="5" 
+      value="exerciseduration" 
+      [ngModel] = "(exerciseduration$ | async)"
+      (ngModelChange)="changeExerciseDuration($event)"></mat-slider>
+      <mat-icon color="primary" aria-hidden="false" aria-label="fitness_center" style="padding-right: 10px;">fitness_center</mat-icon> {{exerciseduration$ | async}} sec
+    </div>
+    <div class="slider-with-icon">
+      <mat-slider 
+      thumbLabel
+      color="accent" 
+      min="0" 
+      max="120" 
+      step="5" 
+      [ngModel] = "(breakduration$ | async)"
+      (ngModelChange)="changeBreakDuration($event)"
+      ></mat-slider>
+      <mat-icon color="accent" aria-hidden="false" aria-label="pause" style="padding-right: 10px;">pause</mat-icon> {{breakduration$ | async}} sec
+    </div>  
+  </div> 
+
+  <div class="flex-container">
+    <div>
+      <div cdkDropList class="selection" (scroll)="onScroll()" (cdkDropListDropped)="drop($event)">
+        <div *ngFor="let d of exercisesOfWorkout$ | async, let indexOfelement=index" cdkDrag>
+          <mat-card>
+            <div class="flex-container">
+              <div>
+                <mat-card-title>{{d.name}}
+                  <button class="remove-btn" (click)="removeFromWorkout(indexOfelement)" mat-icon-button mat-button><mat-icon color="primary">clear</mat-icon></button>
+                </mat-card-title> 
+                <mat-card-subtitle>{{(exerciseduration$ | async)}} sec | Core muscels: xxx</mat-card-subtitle>
+              </div>
+            </div>
+              <div class="verticalline"
+              [ngStyle]="{ 'height.px': (exerciseduration$ | async) }">
+              </div>
+          </mat-card>
+  
+          <div class="break-item" *ngIf="(breakduration$| async) != 0 && indexOfelement+1 != (exerciseNumber$|async)">
+            <div>
+              <mat-icon aria-hidden="false" aria-label="pause" style="padding-right: 10px;">pause</mat-icon>
+            </div>
+            <div class="verticalline-break"
+              [ngStyle]="{ 'height.px': (breakduration$ | async) }">
+            </div>
+          </div>
+        </div>
+    </div>
+    </div>
+  
+    <div style="margin-left: 70px;"> 
+      <h2>Total: {{(selectWorkoutDuration$|async) | date:'mm:ss' }} minutes / {{exerciseNumber$ | async}} exercises</h2> 
+      <a routerLink="/timer" mat-fab color="primary">
+        <mat-icon  aria-hidden="false" aria-label="pause" style="color: white;">play_arrow</mat-icon>
+      </a>
+    </div>
+
+  </div>
+
+  
+</div>

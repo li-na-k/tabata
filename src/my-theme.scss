@@ -1,0 +1,39 @@
+@use '@angular/material' as mat;
+
+//Add mixin named core that includes prerequisite styles for common features 
+// (we are using pre-defined styles and overwrite what we want to change)
+//The core mixin must be included exactly once for your application, even if you define multiple themes.
+//Including the core mixin multiple times will result in duplicate CSS in your application.
+@include mat.core();
+
+//define variables, e.g. for primary colors (starting with $, naming arbitrary)
+//mat.define-palette function takes pre-defined color, creates palette (shades of that color)
+//wenn man will als weitere Parameter noch hellere / dunklere Varianten übergeben
+$my-primary: mat.define-palette(mat.$indigo-palette);
+$my-accent: mat.define-palette(mat.$orange-palette, A200, A100, A400);
+
+//optional: warning color, default red if not specified
+$my-warn: mat.define-palette(mat.$red-palette);
+
+//pass all defined colors to theme-function
+//either "define-light-theme" or "define-dark-theme"
+$my-theme: mat.define-light-theme((
+ color: (
+   primary: $my-primary,
+   accent: $my-accent,
+   warn: $my-warn,
+ )
+));
+
+
+// merging with default styles...
+@include mat.core-theme($my-theme);
+
+// Emit styles for MatButton based on `$my-theme`. Because the configuration
+// passed to `define-light-theme` omits typography, `button-theme` will not
+// emit any typography styles.
+@include mat.button-theme($my-theme);
+
+@include mat.all-component-themes($my-theme);
+
+// Include the theme mixins for other components you use here.

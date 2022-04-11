@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Dosis&display=swap');
+
+body{
+    margin: 0px;
+}
+
+div{
+    background-color: orange;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 120px;
+    padding: 15px 25px;
+    color: white;
+    margin: 0px;
+}
+
+h1{
+    font-family: Dosis;
+    font-size: 40px;
+    padding: 25px;
+}
+
+mat-icon{
+    font-size: 50px;
+    vertical-align: sub;
+}

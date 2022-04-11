@@ -1,0 +1,27 @@
+<a routerLink="/exercises" mat-fab color="primary">
+    <mat-icon  aria-hidden="false" aria-label="pause" style="color: white;">arrow_back</mat-icon>
+</a>
+
+<source src="bling.mp3" type="audio/mp3">
+
+<div class="wrapper">
+    <div *ngIf="!workoutDone" >
+        <button *ngIf="!workoutStarted" mat-fab color="primary" (click)="startTimer()"><mat-icon>play_arrow</mat-icon></button>
+        <button *ngIf="workoutRunning" mat-fab color="primary" (click)="pauseTimer()"><mat-icon>pause</mat-icon></button>
+        <button *ngIf="workoutRunning" mat-fab color="primary" (click)="skipExercise()"><mat-icon>skip_next</mat-icon></button>
+        <button *ngIf="!workoutRunning && workoutStarted" mat-fab color="primary" (click)="continueTimer()"><mat-icon>play_arrow</mat-icon></button>
+        <div class="time" [id]="currentExercise.name">{{timeLeft}}</div>
+        <div class="exercise-label" [id]="currentExercise.name">{{currentExercise.name}}</div>
+        <div class="exercise-instruction"> 
+            <div style="width: 50%;">{{currentExercise.instruction}}</div>
+        </div>
+    </div>
+
+    <div *ngIf="workoutDone">
+        <div class="congrats">Congrats! You finished your workout. Well done!</div>
+        <!-- <div class="party-icon" style="margin-top: 50px; font-size: 40px;">🎉</div> -->
+        <img src="https://c.tenor.com/VgCDirag6VcAAAAi/party-popper-joypixels.gif" alt="party popper"  width="100" style="margin-left: 40px;"/>
+        <div><button class="replay-btn" mat-fab color="primary" (click)="resetTimer()"><mat-icon>replay</mat-icon></button></div>
+    </div>
+
+</div>

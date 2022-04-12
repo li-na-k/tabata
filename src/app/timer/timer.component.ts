@@ -7,6 +7,7 @@ import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
 import { selectBreakDuration } from '../selectors/workoutsettings.selectors';
 import { selectExerciseDuration } from '../selectors/workoutsettings.selectors';
 import { HttpClient } from '@angular/common/http';
+import { ExerciselistComponent } from '../exerciselist/exerciselist.component';
 
 
 @Component({
@@ -16,7 +17,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class TimerComponent implements OnInit, OnDestroy{
 
-  currentExercise : Exercise = {name: "Situp", instruction: "Lie down on your back, keep your knees bent, and your back and feet flat on the mat. Slowly lift your torso and sit up. Return to the starting position by rolling down one vertebra at a time.", id: 0};
+  currentExercise : Exercise =  {name: "Situp", instruction: "Lie down on your back, keep your knees bent, and your back and feet flat on the mat. Slowly lift your torso and sit up. Return to the starting position by rolling down one vertebra at a time.", id: 0};
   interval : any;
   public exercisesOfWorkout$ : Observable<Exercise[]> = this.store.select(selectWorkoutExercises);
   break : boolean = true;
@@ -42,20 +43,21 @@ export class TimerComponent implements OnInit, OnDestroy{
   }
 
   startTimer() {
-    this.workoutStarted = true;
-    this.workoutRunning = true;
-    this.workoutDone = false;
-
     var audio = new Audio(window.location.origin + "/assets/bling.mp3");
     var audio_success = new Audio(window.location.origin + "/assets/success.mp3");
 
     //resetting
-    this.exerciseduration$.subscribe(d => this.timeLeft = d)
+    this.workoutStarted = true;
+    this.workoutRunning = true;
+    this.workoutDone = false;
+    this.exerciseduration$.pipe(takeUntil(this.destroyed)).subscribe(d => this.timeLeft = d)
     clearInterval(this.interval)
     this.exNumber = 0;
 
-    //this.subscriptions.add(... Observable)
-    this.exercisesOfWorkout$.pipe(takeUntil(this.destroyed)).subscribe(d => //eigentlich will keine subscription sondern einen snapshot?... einfach d einer Variable zuweisen am anfang?
+    /* so kann man auch subscription managen: 
+    this.subscriptions.add(... Observable) 
+    -> siehe ngOnDestroy */
+    this.exercisesOfWorkout$.pipe(takeUntil(this.destroyed)).subscribe(d => 
     {
       this.currentExercise = d[0]
       this.interval = setInterval(() => {
@@ -83,7 +85,6 @@ export class TimerComponent implements OnInit, OnDestroy{
             audio_success.play();
             clearInterval(this.interval);
           }
-          console.log(this.timeLeft)
           if(this.timeLeft == 3 || this.timeLeft == 2 || this.timeLeft == 1){
             audio.play();
           }
